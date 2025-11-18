@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-local</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Configure Tailwind and Custom Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        amazonBlue: '#131921',
+                        amazonLightBlue: '#232f3e',
+                        amazonOrange: '#febd69',
+                        amazonDarkOrange: '#f3a847',
+                        amazonBackground: '#eaeded',
+                        amazonHover: '#37475a',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom CSS for specific Amazon effects */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #eaeded; /* amazonBackground */
+        }
+        .amazon-link-hover {
+            border: 1px solid transparent;
+            transition: all 0.1s;
+        }
+        .amazon-link-hover:hover {
+            border-color: white;
+            border-radius: 3px;
+            padding: 5px 9px !important; /* Overwrite tailwind padding */
+        }
+        /* Specific styling to replicate the Hero Image fade effect */
+        .hero-mask {
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+        }
+        /* Cart count positioning */
+        .cart-count-badge {
+            top: 2px;
+            right: 5px;
+        }
+        /* Notification Box */
+        #notification-box {
+            position: fixed;
+            top: 60px;
+            right: 1rem;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+            transform: translateX(100%);
+        }
+        .notification-show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Notification Box (Replaces alert()) -->
+    <div id="notification-box" class="p-3 bg-green-600 text-white rounded shadow-lg">
+        Item added to cart!
+    </div>
+
+    <!-- HEADER: Top Navigation Bar -->
+    <header class="bg-amazonBlue sticky top-0 z-50">
+        <div class="max-w-[1500px] mx-auto flex items-center h-16 px-4">
+            
+            <!-- Logo -->
+            <div class="p-2 mr-4 amazon-link-hover cursor-pointer">
+                <img src="https://placehold.co/97x30/131921/FFFFFF?text=Amazon" alt="Amazon Logo" class="h-8">
+            </div>
+
+            <!-- Deliver To Location (Hidden on small screens) -->
+            <div class="hidden lg:flex items-end p-2 mr-4 amazon-link-hover cursor-pointer">
+                <i class="fas fa-map-marker-alt text-white text-xl mr-1"></i>
+                <div>
+                    <p class="text-xs text-gray-300 leading-none">Deliver to</p>
+                    <p class="font-bold text-sm leading-none">User</p>
+                </div>
+            </div>
+
+            <!-- Search Bar (Takes most space) -->
+            <div class="flex-grow hidden sm:flex h-10 rounded overflow-hidden shadow-md">
+                <select id="search-select" class="bg-gray-200 border-none p-2 text-sm text-gray-600 rounded-l hover:bg-gray-300 cursor-pointer focus:outline-none">
+                    <option value="All">All</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Books">Books</option>
+                </select>
+                <input type="text" placeholder="Search Amazon" class="flex-grow p-2 focus:outline-none">
+                <button class="w-12 bg-amazonOrange hover:bg-amazonDarkOrange transition-colors text-amazonBlue text-xl flex items-center justify-center">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <!-- Right Navigation Items -->
+            <div class="flex items-center ml-4 space-x-2 sm:space-x-4 text-white text-sm">
+                
+                <!-- Account & Lists -->
+                <div class="p-2 hidden sm:block amazon-link-hover cursor-pointer">
+                    <p class="text-xs">Hello, Sign in</p>
+                    <p class="font-bold text-sm whitespace-nowrap">Account & Lists</p>
+                </div>
+
+                <!-- Returns & Orders -->
+                <div class="p-2 hidden sm:block amazon-link-hover cursor-pointer">
+                    <p class="text-xs">Returns</p>
+                    <p class="font-bold text-sm whitespace-nowrap">& Orders</p>
+                </div>
+
+                <!-- Cart -->
+                <div id="cart-nav" class="p-2 relative amazon-link-hover cursor-pointer">
+                    <div class="flex items-end">
+                        <i class="fas fa-shopping-cart text-3xl"></i>
+                        <span id="cart-count" class="absolute cart-count-badge bg-transparent font-bold text-amazonOrange text-base">0</span>
+                        <p class="hidden sm:block font-bold mt-3 ml-1">Cart</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECONDARY NAVIGATION: The "All" Bar -->
+    <nav class="bg-amazonLightBlue text-white text-sm">
+        <div class="max-w-[1500px] mx-auto h-9 flex items-center px-4 overflow-x-auto whitespace-nowrap space-x-3">
+            <a href="#" class="p-1 font-bold flex items-center amazon-link-hover"><i class="fas fa-bars mr-1"></i> All</a>
+            <a href="#" class="p-1 amazon-link-hover">Today's Deals</a>
+            <a href="#" class="p-1 amazon-link-hover">Customer Service</a>
+            <a href="#" class="p-1 amazon-link-hover">Registry</a>
+            <a href="#" class="p-1 amazon-link-hover">Gift Cards</a>
+            <a href="#" class="p-1 amazon-link-hover">Sell</a>
+            <a href="#" class="p-1 amazon-link-hover">Electronics</a>
+            <a href="#" class="p-1 amazon-link-hover">Home</a>
+            <a href="#" class="p-1 amazon-link-hover">Books</a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="relative">
+        
+        <!-- Hero Section/Image Slider -->
+        <section class="hero-mask relative -mt-16 sm:-mt-24 mb-6">
+            <img src="https://placehold.co/1500x500/003d6f/FFFFFF?text=Huge+Savings+on+Tech+and+Home" alt="Hero Banner" class="w-full">
+            <div class="absolute bottom-0 h-40 w-full bg-gradient-to-t from-amazonBackground to-transparent"></div>
+        </section>
+
+        <!-- Product Grid (Positioned to overlap the hero fade) -->
+        <section id="product-grid" class="max-w-[1500px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 px-4 relative -mt-52 mb-10">
+            <!-- Dynamic Product Cards will be injected here by JavaScript -->
+        </section>
+        
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-10">
+        <!-- Back to Top -->
+        <a href="#top" class="block text-center bg-amazonHover hover:bg-amazonHover/90 text-white py-3 text-sm transition-colors">
+            Back to top
+        </a>
+        
+        <!-- Footer Links -->
+        <div class="bg-amazonLightBlue text-white py-10">
+            <div class="max-w-[1000px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 px-4">
+                <div>
+                    <h4 class="font-bold mb-3 text-base">Get to Know Us</h4>
+                    <ul class="text-sm space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Careers</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">About Amazon</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-3 text-base">Make Money with Us</h4>
+                    <ul class="text-sm space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Sell on Amazon</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Become an Affiliate</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-3 text-base">Amazon Payment Products</h4>
+                    <ul class="text-sm space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Amazon Business Card</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Shop with Points</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-3 text-base">Let Us Help You</h4>
+                    <ul class="text-sm space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Your Account</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Shipping Rates & Policies</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Bottom -->
+        <div class="bg-amazonBlue text-white text-xs text-center py-5">
+            <p>© 1996-2025, Amazon-Clone.com, Inc. or its affiliates</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- MOCK PRODUCT DATA ---
+            const mockProducts = [
+                { id: 1, title: "4K Smart TV", category: "Electronics", price: 349.99, image: "https://placehold.co/400x300/a8c3d9/000?text=Smart+TV" },
+                { id: 2, title: "The Martian (Book)", category: "Books", price: 9.99, image: "https://placehold.co/400x300/d9a8c3/000?text=Fiction+Novel" },
+                { id: 3, title: "Wireless Bluetooth Headset", category: "Electronics", price: 49.50, image: "https://placehold.co/400x300/c3d9a8/000?text=Headphones" },
+                { id: 4, title: "Home Office Desk", category: "Home", price: 129.00, image: "https://placehold.co/400x300/d9c3a8/000?text=Furniture" },
+                { id: 5, title: "Professional Blender", category: "Home", price: 89.99, image: "https://placehold.co/400x300/a8a8d9/000?text=Kitchen+Appliance" },
+                { id: 6, title: "Kids Building Blocks Set", category: "Toys", price: 25.49, image: "https://placehold.co/400x300/d9a8d9/000?text=Kids+Toy" },
+            ];
+
+            // --- STATE MANAGEMENT ---
+            let cart = [];
+            const cartCountElement = document.getElementById('cart-count');
+            const productGridElement = document.getElementById('product-grid');
+            const notificationBox = document.getElementById('notification-box');
+
+            // --- UI FUNCTIONS ---
+            
+            /** Shows a temporary notification message */
+            function showNotification(message) {
+                notificationBox.textContent = message;
+                notificationBox.classList.add('notification-show');
+                setTimeout(() => {
+                    notificationBox.classList.remove('notification-show');
+                }, 2000);
+            }
+
+            /** Updates the visible cart count badge */
+            function updateCartCount() {
+                cartCountElement.textContent = cart.length;
+            }
+
+            /** Renders all mock products into the grid */
+            function renderProducts() {
+                productGridElement.innerHTML = ''; // Clear existing content
+
+                // Add a permanent Sign-In/Introductory Card (like Amazon does)
+                const signInCardHTML = `
+                    <div class="bg-white p-5 rounded-lg shadow-md h-full flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold mb-3">Sign in for the best experience</h3>
+                            <p class="text-gray-600 mb-4">Track orders, manage wish lists, and view personalized recommendations.</p>
+                        </div>
+                        <div class="mt-auto">
+                            <button class="w-full py-2 bg-yellow-400 text-amazonBlue font-bold rounded-md hover:bg-yellow-500 transition-colors">
+                                Sign in securely
+                            </button>
+                            <p class="mt-2 text-xs text-gray-500">New customer? <a href="#" class="text-amazonBlue hover:text-amazonDarkOrange">Start here.</a></p>
+                        </div>
+                    </div>
+                `;
+                // Create a temporary container for the Sign In card to keep the rendering clean
+                const signInCardWrapper = document.createElement('div');
+                signInCardWrapper.innerHTML = signInCardHTML;
+                productGridElement.appendChild(signInCardWrapper.firstChild);
+
+
+                // Render Product Cards dynamically
+                mockProducts.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white p-5 rounded-lg shadow-md flex flex-col h-full';
+                    card.innerHTML = `
+                        <h3 class="text-lg font-bold mb-2">${product.title}</h3>
+                        <p class="text-xs text-gray-500 mb-3">${product.category}</p>
+                        <div class="flex-grow flex items-center justify-center mb-4">
+                            <img src="${product.image}" alt="${product.title}" class="max-h-40 object-contain rounded">
+                        </div>
+                        <p class="text-xl font-extrabold text-red-600 mb-4">$${product.price.toFixed(2)}</p>
+                        <button 
+                            data-product-id="${product.id}"
+                            class="add-to-cart-btn w-full py-2 bg-amazonOrange text-amazonBlue font-bold rounded-md hover:bg-amazonDarkOrange transition-colors text-sm"
+                        >
+                            Add to Cart
+                        </button>
+                    `;
+                    productGridElement.appendChild(card);
+                });
+
+                // Attach event listeners after rendering
+                attachEventListeners();
+            }
+
+            // --- CART LOGIC ---
+
+            /** Adds a product to the cart state */
+            function addToCart(productId) {
+                const product = mockProducts.find(p => p.id === productId);
+                if (product) {
+                    cart.push(product);
+                    updateCartCount();
+                    showNotification(`${product.title} added!`);
+                } else {
+                    showNotification("Error: Product not found.");
+                }
+            }
+
+            // --- EVENT LISTENERS ---
+
+            function attachEventListeners() {
+                document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const productId = parseInt(e.currentTarget.getAttribute('data-product-id'));
+                        addToCart(productId);
+                    });
+                });
+            }
+
+            // --- INITIALIZATION ---
+            renderProducts();
+            updateCartCount(); // Initialize count
+        });
+    </script>
+</body>
+</html>
